@@ -4,4 +4,5 @@
 - The game Tetris 
 
 ## Nice to Have List
-- The colour of the blocks changes after x score
+- The color changes when the score reaches a certain amount
+- The speed changes when the score reaches a certain amount
