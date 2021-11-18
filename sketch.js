@@ -1,5 +1,8 @@
 let grid;
 let gridWidth = 10;
+let gridHeight = 22;
+
+let score = 0;
 
 let types = {
   block: [
@@ -41,22 +44,13 @@ let types = {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  grid = createEmpty2DArray(gridSize,gridSize);
+  grid = createEmpty2DArray(gridHeight,gridWidth);
 }
 
 function draw() {
   background(220);
   displayGrid();
 }
-
-class Tetris {
-  constructor(x, y, type) {
-    this.x = x;
-    this.y = y;
-    this.type = type;
-  }
-}
-
 
 function createEmpty2DArray(rows,cols){
   let grid = [];
@@ -70,15 +64,14 @@ function createEmpty2DArray(rows,cols){
 }
 
 function displayGrid(){
-  let cellWidth = width/gridSize;
-  let cellHeight = height/gridSize;
-  
-  for (let y=0; y<gridSize; y++){
-    for (let x=0; x<gridSize; x++){
+  let cellWidth = width/gridWidth;
+  let cellHeight = height/gridHeight;
+
+  for (let y=0; y<gridHeight; y++){
+    for (let x=0; x<gridWidth; x++){
       if (grid[y][x] === 0){
         fill("white");
       }
-      noStroke();
       rect(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
     }
   }
