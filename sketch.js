@@ -2,6 +2,8 @@ let grid;
 let gridWidth = 10;
 let gridHeight = 22;
 
+let drawButton;
+let tetris = false;
 let score = 0;
 
 let types = {
@@ -45,11 +47,24 @@ let types = {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   grid = createEmpty2DArray(gridHeight,gridWidth);
+
+  // Start menu
+  drawButton = createButton("start");
+  drawButton.position(width/2,height/2);
+  drawButton.mouseClicked(enterTetris);
+  drawButton.size(100,100);
 }
 
 function draw() {
   background(220);
-  displayGrid();
+  if (tetris){
+    drawButton.remove();
+    displayGrid();
+  }
+}
+
+function enterTetris(){
+  tetris = !tetris;
 }
 
 function createEmpty2DArray(rows,cols){
@@ -64,7 +79,7 @@ function createEmpty2DArray(rows,cols){
 }
 
 function displayGrid(){
-  let cellWidth = width/gridWidth;
+  let cellWidth = width/2/gridWidth;
   let cellHeight = height/gridHeight;
 
   for (let y=0; y<gridHeight; y++){
