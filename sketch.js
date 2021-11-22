@@ -60,6 +60,7 @@ function draw() {
   if (tetris){
     drawButton.remove();
     displayGrid();
+    drawBorderLines();
   }
 }
 
@@ -87,7 +88,26 @@ function displayGrid(){
       if (grid[y][x] === 0){
         fill("white");
       }
+      strokeWeight(1);
       rect(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
     }
+  }
+}
+
+function drawBorderLines() {
+  strokeWeight(4);
+  for (let x=0; x<gridWidth; x+= gridWidth){
+    line(0+x,0+x,gridWidth*x,gridWidth*x);
+  }
+  // for (let y=0; y<gridHeight; y+= gridHeight){
+  //   line(0,0,);
+  // }
+}
+
+class Tetris {
+  constructor(type){
+    this.gridHeight = gridHeight;
+    this.gridWidth = gridWidth;
+    this.type = type;
   }
 }
