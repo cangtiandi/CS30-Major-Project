@@ -5,6 +5,7 @@ let gridHeight = 22;
 let drawButton;
 let tetris = false;
 let score = 0;
+let blockGame;
 
 let types = {
   block: [
@@ -46,21 +47,22 @@ let types = {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  grid = createEmpty2DArray(gridHeight,gridWidth);
+  blockGame = new Tetris;
+  grid = blockGame.createEmpty2DArray(gridHeight,gridWidth);
 
   // Start menu
   drawButton = createButton("start");
   drawButton.position(width/2,height/2);
   drawButton.mouseClicked(enterTetris);
   drawButton.size(100,100);
+
 }
 
 function draw() {
   background(220);
   if (tetris){
     drawButton.remove();
-    displayGrid();
-    drawBorderLines();
+    blockGame.displayGrid();
   }
 }
 
@@ -68,46 +70,42 @@ function enterTetris(){
   tetris = !tetris;
 }
 
-function createEmpty2DArray(rows,cols){
-  let grid = [];
-  for (let y=0; y<rows; y++){
-    grid.push([]);
-    for (let x=0; x<cols; x++){
-      grid[y].push(0);
-    }
-  }
-  return grid;
-}
-
-function displayGrid(){
-  let cellWidth = width/2/gridWidth;
-  let cellHeight = height/gridHeight;
-
-  for (let y=0; y<gridHeight; y++){
-    for (let x=0; x<gridWidth; x++){
-      if (grid[y][x] === 0){
-        fill("white");
-      }
-      strokeWeight(1);
-      rect(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
-    }
-  }
-}
-
-function drawBorderLines() {
-  strokeWeight(4);
-  for (let x=0; x<gridWidth; x+= gridWidth){
-    line(0+x,0+x,gridWidth*x,gridWidth*x);
-  }
-  // for (let y=0; y<gridHeight; y+= gridHeight){
-  //   line(0,0,);
-  // }
-}
 
 class Tetris {
-  constructor(type){
-    this.gridHeight = gridHeight;
-    this.gridWidth = gridWidth;
-    this.type = type;
+  constructor(){
+    
+  }
+
+  createEmpty2DArray(rows,cols){
+    let grid = [];
+    for (let y=0; y<rows; y++){
+      grid.push([]);
+      for (let x=0; x<cols; x++){
+        grid[y].push(0);
+      }
+    }
+    return grid;
+  }
+
+  displayGrid(){
+    let cellWidth = width/2/gridWidth;
+    let cellHeight = height/gridHeight;
+  
+    for (let y=0; y<gridHeight; y++){
+      for (let x=0; x<gridWidth; x++){
+        if (grid[y][x] === 0){
+          fill("white");
+        }
+        strokeWeight(1);
+        rect(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
+      }
+    }
+
+    // border for the grid(too lazy to figure anything else)
+    strokeWeight(4);
+    line(0, 0, width/2, 0);
+    line(0, 0, 0, height);
+    line(width/2, 0, width/2, height);
   }
 }
+
