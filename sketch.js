@@ -1,11 +1,11 @@
 let grid;
-let gridWidth = 10;
-let gridHeight = 22;
+
 
 let drawButton;
 let tetris = false;
 let score = 0;
 let blockGame;
+let playfield;
 
 let types = {
   block: [
@@ -47,8 +47,9 @@ let types = {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  blockGame = new Tetris;
-  grid = blockGame.createEmpty2DArray(gridHeight,gridWidth);
+  blockGame = new Piece;
+  playfield = new Playfield;
+  grid = playfield.createEmpty2DArray(22,10);
 
   // Start menu
   drawButton = createButton("start");
@@ -62,7 +63,7 @@ function draw() {
   background(220);
   if (tetris){
     drawButton.remove();
-    blockGame.displayGrid();
+    playfield.displayGrid();
   }
 }
 
@@ -71,11 +72,18 @@ function enterTetris(){
 }
 
 
-class Tetris {
-  constructor(){
-    
+class Piece {
+  constructor(type){
+    this.type = type;
+    this.cells = types[type];
   }
+}
 
+class Playfield {
+  constructor() {
+    this.width = 10;
+    this.height = 22;
+  }
   createEmpty2DArray(rows,cols){
     let grid = [];
     for (let y=0; y<rows; y++){
@@ -88,11 +96,11 @@ class Tetris {
   }
 
   displayGrid(){
-    let cellWidth = width/2/gridWidth;
-    let cellHeight = height/gridHeight;
+    let cellWidth = width/2/this.width;
+    let cellHeight = height/this.height;
   
-    for (let y=0; y<gridHeight; y++){
-      for (let x=0; x<gridWidth; x++){
+    for (let y=0; y<this.height; y++){
+      for (let x=0; x<this.width; x++){
         if (grid[y][x] === 0){
           fill("white");
         }
@@ -108,4 +116,3 @@ class Tetris {
     line(width/2, 0, width/2, height);
   }
 }
-
