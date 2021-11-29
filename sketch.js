@@ -1,10 +1,10 @@
 let grid;
 
-let drawButton;
+let drawButton, playButton;
 let tetris = false;
 let score = 0;
-let piece;
-let playfield;
+
+let piece, playfield;
 
 let types = {
   block: [
@@ -53,9 +53,14 @@ function setup() {
   // Start menu
   drawButton = createButton("start");
   drawButton.position(width/2,height/2);
-  drawButton.mouseClicked(enterTetris);
   drawButton.size(100,100);
+  drawButton.mouseClicked(enterTetris);
 
+  // How to play Button 
+  // playButton  = createButton("instructions");
+  // playButton.position(width/2,height/2+150);
+  // playButton.size(100,50);
+  // playButton.mouseClicked();
 }
 
 function draw() {
@@ -76,6 +81,14 @@ class Piece {
   constructor(types){
     this.type = types;
   }
+
+  // createPiece(){
+  //   for (let i=0; i<this.type.length, i++){
+  //     if (this.type !== null){
+
+  //     }
+  //   } 
+  // }
 }
 
 class Playfield {
@@ -104,11 +117,14 @@ class Playfield {
         if (grid[y][x] === 0){
           fill(220);
         }
-        strokeWeight(1);
+        strokeWeight(0.1);
         rect(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
       }
     }
 
+    // addToGrid(){
+
+    // }
     // border for the grid(too lazy to figure anything else)
     strokeWeight(4);
     line(0, 0, width/2, 0);
