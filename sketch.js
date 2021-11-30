@@ -82,13 +82,25 @@ class Piece {
     this.type = types;
   }
 
-  // createPiece(){
-  //   for (let i=0; i<this.type.length, i++){
-  //     if (this.type !== null){
+  createPiece(){
+    let grid = [];
+    for (let y=0; y<this.type.length; y++){
+      if (this.type !== null){
+        grid.push([]);
+      }
+      for (let x=0; x<this.type.length; x++){
+        grid[y].push("red");
+      }
+    }
+  }
+  
+  displayPiece() {
+    for (let y=0; y<this.height; y++){
+      for (let x=0; x<this.width; x++){
 
-  //     }
-  //   } 
-  // }
+      }
+    }
+  } 
 }
 
 class Playfield {
