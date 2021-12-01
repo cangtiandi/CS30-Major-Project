@@ -48,7 +48,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   piece = new Piece;
   playfield = new Playfield;
-  grid = playfield.createEmpty2DArray(22,10);
+  grid = playfield.createEmpty2DArray(10,22);
 
   // Start menu
   drawButton = createButton("start");
@@ -76,37 +76,43 @@ function enterTetris(){
   tetris = !tetris;
 }
 
-
 class Piece {
-  constructor(types){
-    this.type = types;
+  constructor(type, x, y, playfield){
+    this.type = type;
+    this.cells = types[type];
+    this.size = this.cells.length;
+    this.x = x === floor((playfield.cellHeight - this.size) / 2);
+    this.y =  y || 0;
+    this.cellSize = playfield;
+    this.offset = playfield;
   }
 
-  createPiece(){
-    let grid = [];
-    for (let y=0; y<this.type.length; y++){
-      if (this.type !== null){
-        grid.push([]);
-      }
-      for (let x=0; x<this.type.length; x++){
-        grid[y].push("red");
-      }
-    }
-  }
-  
   displayPiece() {
-    for (let y=0; y<this.height; y++){
-      for (let x=0; x<this.width; x++){
+    for (let rows=0; rows<this.size; rows++){
+      for (let cols=0; cols<this.size; cols++){
+        if (this.cells[rows][cols]){
+          let x = this.x + cols;
+          let y = this.y + rows;
 
+          let cellSize = this.cellSize;
+          let off = this.offset;
+
+          fill("red");
+          rect();
+        }
       }
     }
   } 
+
+  rotate() {
+
+  }
 }
 
 class Playfield {
-  constructor() {
-    this.width = 10;
-    this.height = 22;
+  constructor(w,h) {
+    this.width = w;
+    this.height = h;
   }
 
   createEmpty2DArray(rows,cols){
@@ -134,9 +140,6 @@ class Playfield {
       }
     }
 
-    // addToGrid(){
-
-    // }
     // border for the grid(too lazy to figure anything else)
     strokeWeight(4);
     line(0, 0, width/2, 0);
