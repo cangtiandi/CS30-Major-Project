@@ -6,49 +6,11 @@ let score = 0;
 
 let piece, playfield;
 
-let types = {
-  block: [
-    ["red", "red", null],
-    ["red", "red", null],
-    [null, null, null],
-  ],
-  lineBlock: [
-    [null, null, null, null],
-    ["red", "red", "red", "red"],
-    [null, null, null, null]
-  ],
-  tBlock: [
-    [null, "red", null],
-    ["red", "red", "red"],
-    [null, null, null]
-  ],
-  lblock: [
-    ["red", null, null],
-    ["red","red","red"],
-    [null, null, null]
-  ],
-  reverseLBlock: [
-    [null, null, "red"],
-    ["red","red","red"],
-    [null, null, null]
-  ],
-  zBlock: [
-    ["red", "red", null],
-    [null, "red", "red"],
-    [null, null, null]
-  ],
-  reverseZBlock: [
-    [null, "red", "red"],
-    ["red", "red", null],
-    [null, null, null]
-  ]
-};
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  piece = new Piece;
+  // piece = new Piece;
   playfield = new Playfield;
-  grid = playfield.createEmpty2DArray(10,22);
+  grid = playfield.createTetris2DArray();
 
   // Start menu
   drawButton = createButton("start");
@@ -60,7 +22,7 @@ function setup() {
   // playButton  = createButton("instructions");
   // playButton.position(width/2,height/2+150);
   // playButton.size(100,50);
-  // playButton.mouseClicked();
+  // playButton.mouseClicked(enterInstructions);
 }
 
 function draw() {
@@ -68,7 +30,7 @@ function draw() {
   if (tetris){
     background("white");
     drawButton.remove();
-    playfield.displayGrid();
+    playfield.displayBoard();
   }
 }
 
@@ -76,33 +38,59 @@ function enterTetris(){
   tetris = !tetris;
 }
 
+// code when the game is done
+// function enterInstructions() {
+//   text("Press space to harddrop");
+// }
+
 class Piece {
-  constructor(type, x, y, playfield){
-    this.type = type;
-    this.cells = types[type];
-    this.size = this.cells.length;
-    this.x = x === floor((playfield.cellHeight - this.size) / 2);
-    this.y =  y || 0;
-    this.cellSize = playfield;
-    this.offset = playfield;
+  constructor() {
+    this.types = {
+      block: [
+        ["red", "red", null],
+        ["red", "red", null],
+        [null, null, null],
+      ],
+      lineBlock: [
+        [null, null, null, null],
+        ["red", "red", "red", "red"],
+        [null, null, null, null]
+      ],
+      tBlock: [
+        [null, "red", null],
+        ["red", "red", "red"],
+        [null, null, null]
+      ],
+      lblock: [
+        ["red", null, null],
+        ["red","red","red"],
+        [null, null, null]
+      ],
+      reverseLBlock: [
+        [null, null, "red"],
+        ["red","red","red"],
+        [null, null, null]
+      ],
+      zBlock: [
+        ["red", "red", null],
+        [null, "red", "red"],
+        [null, null, null]
+      ],
+      reverseZBlock: [
+        [null, "red", "red"],
+        ["red", "red", null],
+        [null, null, null]
+      ]
+    };
   }
 
   displayPiece() {
-    for (let rows=0; rows<this.size; rows++){
-      for (let cols=0; cols<this.size; cols++){
-        if (this.cells[rows][cols]){
-          let x = this.x + cols;
-          let y = this.y + rows;
-
-          let cellSize = this.cellSize;
-          let off = this.offset;
-
-          fill("red");
-          rect();
-        }
-      }
-    }
+    
   } 
+
+  pieceMovement() {
+
+  }
 
   rotate() {
 
@@ -110,33 +98,32 @@ class Piece {
 }
 
 class Playfield {
-  constructor(w,h) {
-    this.width = w;
-    this.height = h;
+  constructor() {
+    this.width = 10;
+    this.height = 22;
+    this.cellWidth = width/2/this.width;
+    this.cellHeight = height/this.height;
   }
 
-  createEmpty2DArray(rows,cols){
+  createTetris2DArray(){
     let grid = [];
-    for (let y=0; y<rows; y++){
+    for (let y=0; y<this.height; y++){
       grid.push([]);
-      for (let x=0; x<cols; x++){
+      for (let x=0; x<this.height; x++){
         grid[y].push(0);
       }
     }
     return grid;
   }
 
-  displayGrid(){
-    let cellWidth = width/2/this.width;
-    let cellHeight = height/this.height;
-  
+  displayBoard(){
     for (let y=0; y<this.height; y++){
       for (let x=0; x<this.width; x++){
         if (grid[y][x] === 0){
           fill(220);
         }
         strokeWeight(0.1);
-        rect(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
+        rect(x*this.cellWidth, y*this.cellHeight, this.cellWidth, this.cellHeight);
       }
     }
 
