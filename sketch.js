@@ -47,45 +47,57 @@ class Piece {
   constructor() {
     this.types = {
       block: [
-        ["red", "red", null],
-        ["red", "red", null],
+        [1, 1, null],
+        [1, 1, null],
         [null, null, null],
       ],
       lineBlock: [
         [null, null, null, null],
-        ["red", "red", "red", "red"],
+        [1, 1, 1, 1],
         [null, null, null, null]
       ],
       tBlock: [
-        [null, "red", null],
-        ["red", "red", "red"],
+        [null, 1, null],
+        [1, 1, 1],
         [null, null, null]
       ],
       lblock: [
-        ["red", null, null],
-        ["red","red","red"],
+        [1, null, null],
+        [1,1,1],
         [null, null, null]
       ],
       reverseLBlock: [
-        [null, null, "red"],
-        ["red","red","red"],
+        [null, null, 1],
+        [1,1,1],
         [null, null, null]
       ],
       zBlock: [
-        ["red", "red", null],
-        [null, "red", "red"],
+        [1, 1, null],
+        [null, 1, 1],
         [null, null, null]
       ],
       reverseZBlock: [
-        [null, "red", "red"],
-        ["red", "red", null],
+        [null, 1, 1],
+        [1, 1, null],
         [null, null, null]
       ]
     };
+    this.color = "red";
+    this.shape = [[]];
+    this.x = 0;
+    this.y = 0;
+    this.rotatedshape = [[]];
   }
 
-  displayPiece() {
-    
+  displayBlockPiece() {
+    for (let rows=0; rows<this.types.block.length; rows++){
+      for (let cols=0; cols<this.types.block.length; cols++){
+        if (this.types.block === 1){
+          
+        }
+      }
+      rect(cols*this.cellWidth, rows*this.cellHeight, this.cellWidth, this.cellHeight);
+    }
   } 
 
   pieceMovement() {
