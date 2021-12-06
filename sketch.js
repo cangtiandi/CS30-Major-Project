@@ -43,62 +43,10 @@ function enterTetris(){
 //   text("Press space to harddrop");
 // }
 
-class Piece {
+class Tetris {
   constructor() {
-    this.types = {
-      block: [
-        [1, 1, null],
-        [1, 1, null],
-        [null, null, null],
-      ],
-      lineBlock: [
-        [null, null, null, null],
-        [1, 1, 1, 1],
-        [null, null, null, null]
-      ],
-      tBlock: [
-        [null, 1, null],
-        [1, 1, 1],
-        [null, null, null]
-      ],
-      lblock: [
-        [1, null, null],
-        [1,1,1],
-        [null, null, null]
-      ],
-      reverseLBlock: [
-        [null, null, 1],
-        [1,1,1],
-        [null, null, null]
-      ],
-      zBlock: [
-        [1, 1, null],
-        [null, 1, 1],
-        [null, null, null]
-      ],
-      reverseZBlock: [
-        [null, 1, 1],
-        [1, 1, null],
-        [null, null, null]
-      ]
-    };
-    this.color = "red";
-    this.shape = [[]];
-    this.x = 0;
-    this.y = 0;
     this.rotatedshape = [[]];
   }
-
-  displayBlockPiece() {
-    for (let rows=0; rows<this.types.block.length; rows++){
-      for (let cols=0; cols<this.types.block.length; cols++){
-        if (this.types.block === 1){
-          
-        }
-      }
-      rect(cols*this.cellWidth, rows*this.cellHeight, this.cellWidth, this.cellHeight);
-    }
-  } 
 
   pieceMovement() {
 
@@ -106,6 +54,54 @@ class Piece {
 
   rotate() {
 
+  }
+}
+
+class Piece {
+  constructor() {
+    this.choice = random(1, 7);
+    this.spawn = 0;
+
+    if (this.choice === 1){ // Square
+      [1, 1, null],
+      [1, 1, null],
+      [null, null, null];
+    }
+    if (this.choice === 2){ // Line block
+      [null, null, null, null],
+      [1, 1, 1, 1],
+      [null, null, null, null];
+    }
+    if (this.choice === 3){ // T block 
+      [null, 1, null],
+      [1, 1, 1],
+      [null, null, null];
+    }
+    
+    if (this.choice === 4){ // L block
+      [1, null, null],
+      [1, 1, 1],
+      [null, null, null];
+    }
+    if (this.choice === 5){ // Reverse L block
+      [null, null, 1],
+      [1, 1, 1],
+      [null, null, null];
+    }
+    if (this.choice === 6){ // Z block
+      [1, 1, null],
+      [null, 1, 1],
+      [null, null, null];
+    }
+    if (this.choice === 7){ // Reverse Z block
+      [null, 1, 1],
+      [1, 1, null],
+      [null, null, null];
+    }
+  }
+
+  drawPiece() {
+    for (let y=0;)
   }
 }
 
