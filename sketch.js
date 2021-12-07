@@ -8,7 +8,7 @@ let piece, playfield;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  // piece = new Piece;
+  piece = new Piece;
   playfield = new Playfield;
   grid = playfield.createTetris2DArray();
 
@@ -31,6 +31,7 @@ function draw() {
     background("white");
     drawButton.remove();
     playfield.displayBoard();
+    piece.drawPiece();
   }
 }
 
@@ -45,7 +46,7 @@ function enterTetris(){
 
 class Tetris {
   constructor() {
-    this.rotatedshape = [[]];
+    this.rotatedshape = [];
   }
 
   pieceMovement() {
@@ -57,51 +58,100 @@ class Tetris {
   }
 }
 
-class Piece {
+class Piece { 
   constructor() {
-    this.choice = random(1, 7);
-    this.spawn = 0;
+    this.currentPiece = [];
 
-    if (this.choice === 1){ // Square
-      [1, 1, null],
-      [1, 1, null],
-      [null, null, null];
-    }
-    if (this.choice === 2){ // Line block
-      [null, null, null, null],
+    this.currentPiecePos = {
+      x: 0,
+      y: 0
+    };
+
+    this.squareBlock = [ 
+      [1, 1],
+      [1, 1]
+    ];
+
+    this.lineBlock = [
       [1, 1, 1, 1],
-      [null, null, null, null];
-    }
-    if (this.choice === 3){ // T block 
-      [null, 1, null],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0]
+    ];
+
+    this.tBlock = [
+      [0, 1, 0],
       [1, 1, 1],
-      [null, null, null];
-    }
+      [0, 0, 0]
+    ];
     
-    if (this.choice === 4){ // L block
-      [1, null, null],
+    this.lblock = [
+      [1, 0, 0],
       [1, 1, 1],
-      [null, null, null];
-    }
-    if (this.choice === 5){ // Reverse L block
-      [null, null, 1],
+      [0, 0, 0]
+    ];
+
+    this.reverseLblock = [
+      [0, 0, 1],
       [1, 1, 1],
-      [null, null, null];
-    }
-    if (this.choice === 6){ // Z block
-      [1, 1, null],
-      [null, 1, 1],
-      [null, null, null];
-    }
-    if (this.choice === 7){ // Reverse Z block
-      [null, 1, 1],
-      [1, 1, null],
-      [null, null, null];
+      [0, 0, 0]
+    ];
+
+    this.zblock = [
+      [1, 1, 0],
+      [0, 1, 1],
+      [0, 0, 0]
+    ];
+    
+    this.reverseZblock = [
+      [0, 1, 1],
+      [1, 1, 0],
+      [0, 0, 0]
+    ];
+  } 
+
+  spawnPiece() {
+    let choice = floor(random(1, 7));
+    switch (choice){
+    case 0:
+      this.currentPiece = this.squareBlock;
+      break;
+
+    case 1:
+      this.currentPiece = this.lineBlock;
+      break;
+
+    case 2:
+      this.currentPiece = this.tBlock;
+      break;
+
+    case 3:
+      this.currentPiece = this.lblock;
+      break;
+    
+    case 4:
+      this.currentPiece = this.reverseLblock;
+      break;
+
+    case 5:
+      this.currentPiece = this.zblock;
+      break;
+
+    case 6:
+      this.currentPiece = this.reverseZblock;
+      break;
     }
   }
 
   drawPiece() {
-    for (let y=0;)
+    for (let i=0; i<this.currentPiece.length; i++){
+      for (let j=0; j<this.currentPiece.length; j++){
+        if (this.currentPiece[i][j] === 1){
+          fill("red");
+          rect(this.currentPiecePos.x*this.cellWidth, this.currentPiecePos.y*this.cellHeight, this.cellWidth, this.cellHeight);
+        }
+      }
+    }
   }
 }
 
@@ -137,8 +187,8 @@ class Playfield {
 
     // border for the grid(too lazy to figure anything else)
     strokeWeight(4);
-    line(0, 0, width/2, 0);
-    line(0, 0, 0, height);
-    line(width/2, 0, width/2, height);
+    line(0, 0, width/2, 0); // top line
+    line(0, 0, 0, height); // left line
+    line(width/2, 0, width/2, height); // right line 
   }
 }
