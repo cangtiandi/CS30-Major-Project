@@ -18,6 +18,8 @@ function setup() {
   drawButton.size(100,100);
   drawButton.mouseClicked(enterTetris);
 
+
+  piece.spawnPiece();
   // How to play Button 
   // playButton  = createButton("instructions");
   // playButton.position(width/2,height/2+150);
@@ -44,28 +46,14 @@ function enterTetris(){
 //   text("Press space to harddrop");
 // }
 
-class Tetris {
-  constructor() {
-    this.rotatedshape = [];
-  }
-
-  pieceMovement() {
-
-  }
-
-  rotate() {
-
-  }
-}
-
 class Piece { 
   constructor() {
     this.currentPiece = [];
 
-    this.currentPiecePos = {
-      x: 0,
-      y: 0
-    };
+    this.width = 10;
+    this.height = 22;
+    this.cellWidth = width/2/this.width;
+    this.cellHeight = height/this.height;
 
     this.squareBlock = [ 
       [1, 1],
@@ -145,14 +133,20 @@ class Piece {
 
   drawPiece() {
     for (let i=0; i<this.currentPiece.length; i++){
-      for (let j=0; j<this.currentPiece.length; j++){
+      for (let j=0; j<this.currentPiece[0].length; j++){
         if (this.currentPiece[i][j] === 1){
           fill("red");
-          rect(this.currentPiecePos.x*this.cellWidth, this.currentPiecePos.y*this.cellHeight, this.cellWidth, this.cellHeight);
+          strokeWeight(0);
+          rect(j*this.cellWidth , i*this.cellHeight, this.cellWidth, this.cellHeight);
         }
       }
     }
   }
+
+  pieceMovement() {
+    let ro
+  }
+  
 }
 
 class Playfield {
