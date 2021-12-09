@@ -49,6 +49,10 @@ function enterTetris(){
 class Piece { 
   constructor() {
     this.currentPiece = [];
+    this.currentPiecePos = {
+      x: 3, 
+      y: 0,
+    };
 
     this.width = 10;
     this.height = 22;
@@ -132,19 +136,19 @@ class Piece {
   }
 
   drawPiece() {
-    for (let i=0; i<this.currentPiece.length; i++){
-      for (let j=0; j<this.currentPiece[0].length; j++){
-        if (this.currentPiece[i][j] === 1){
+    for (let y=0; y<this.currentPiece.length; y++){
+      for (let x=0; x<this.currentPiece[0].length; x++){
+        if (this.currentPiece[y][x] === 1){
           fill("red");
           strokeWeight(0);
-          rect(j*this.cellWidth , i*this.cellHeight, this.cellWidth, this.cellHeight);
+          rect((this.currentPiecePos.x + x)*this.cellWidth, y*this.cellHeight, this.cellWidth, this.cellHeight);
         }
       }
     }
   }
 
-  pieceMovement() {
-    let ro
+  fallPiece() {
+  
   }
   
 }
