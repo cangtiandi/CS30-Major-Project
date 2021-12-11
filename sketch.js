@@ -133,6 +133,9 @@ class Piece {
       this.currentPiece = this.reverseZblock;
       break;
     }
+
+    this.currentPiecePos.x = 3;
+    this.currentPiecePos.y = 0;
   }
 
   drawPiece() {
@@ -141,14 +144,14 @@ class Piece {
         if (this.currentPiece[y][x] === 1){
           fill("red");
           strokeWeight(0);
-          rect((this.currentPiecePos.x + x)*this.cellWidth, y*this.cellHeight, this.cellWidth, this.cellHeight);
+          rect((this.currentPiecePos.x + x)*this.cellWidth, this.currentPiecePos.y + y*this.cellHeight, this.cellWidth, this.cellHeight);
         }
       }
     }
   }
 
   fallPiece() {
-  
+   this.currentPiecePos.y++;
   }
   
 }
