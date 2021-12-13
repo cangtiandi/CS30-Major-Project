@@ -1,10 +1,12 @@
 let grid;
 
 let drawButton, playButton;
+let piece, playfield;
+
 let tetris = false;
 let score = 0;
 
-let piece, playfield;
+let time = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -20,7 +22,7 @@ function setup() {
 
 
   piece.spawnPiece();
-  // How to play Button 
+  // How to play Button todo  
   // playButton  = createButton("instructions");
   // playButton.position(width/2,height/2+150);
   // playButton.size(100,50);
@@ -29,16 +31,30 @@ function setup() {
 
 function draw() {
   background(220);
+
   if (tetris){
     background("white");
     drawButton.remove();
     playfield.displayBoard();
     piece.drawPiece();
+
+    if (time === 1000){
+      piece.pieceMovement(0,1);
+    }
   }
 }
 
 function enterTetris(){
   tetris = !tetris;
+}
+
+function keyPressed() {
+  if (keyCode === 68){
+    piece.pieceMovement(1, 0);
+  }
+  if (keyCode === 65){
+    piece.pieceMovement(-1, 0);
+  }
 }
 
 // code when the game is done
@@ -150,10 +166,10 @@ class Piece {
     }
   }
 
-  fallPiece() {
-   this.currentPiecePos.y++;
+  pieceMovement(x, y) {
+    this.currentPiecePos.x += x;
+    this.currentPiecePos.y += y;
   }
-  
 }
 
 class Playfield {
