@@ -38,8 +38,12 @@ function draw() {
     playfield.displayBoard();
     piece.drawPiece();
 
-    if (time === 1000){
-      piece.pieceMovement(0,1);
+
+    if (millis() > time + 750) {
+      if (playfield.lineChecker){
+        time = millis();
+        piece.pieceMovement(0,playfield.cellHeight);
+      }
     }
   }
 }
@@ -69,11 +73,6 @@ class Piece {
       x: 3, 
       y: 0,
     };
-
-    this.width = 10;
-    this.height = 22;
-    this.cellWidth = width/2/this.width;
-    this.cellHeight = height/this.height;
 
     this.squareBlock = [ 
       [1, 1],
@@ -160,7 +159,7 @@ class Piece {
         if (this.currentPiece[y][x] === 1){
           fill("red");
           strokeWeight(0);
-          rect((this.currentPiecePos.x + x)*this.cellWidth, this.currentPiecePos.y + y*this.cellHeight, this.cellWidth, this.cellHeight);
+          rect((this.currentPiecePos.x + x)*playfield.cellWidth, this.currentPiecePos.y + y*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
         }
       }
     }
@@ -207,5 +206,18 @@ class Playfield {
     line(0, 0, width/2, 0); // top line
     line(0, 0, 0, height); // left line
     line(width/2, 0, width/2, height); // right line 
+  }
+
+  lineChecker() {
+    for (let y=0; y<this.height; y++){
+      for (let x=0; x<this.width; x++){
+        if (grid[y] !== 22){
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+    }
   }
 }
