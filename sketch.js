@@ -5,7 +5,6 @@ let piece, playfield;
 
 let tetris = false;
 let score = 0;
-
 let time = 0;
 
 function setup() {
@@ -22,6 +21,7 @@ function setup() {
 
 
   piece.spawnPiece();
+
   // How to play Button todo  
   // playButton  = createButton("instructions");
   // playButton.position(width/2,height/2+150);
@@ -40,9 +40,9 @@ function draw() {
 
 
     if (millis() > time + 750) {
-      if (playfield.lineChecker){
+      if (piece.currentPiecePos.y < width/2){
         time = millis();
-        piece.pieceMovement(0,playfield.cellHeight);
+        piece.pieceMovement(0, playfield.cellHeight);
       }
     }
   }
@@ -53,12 +53,21 @@ function enterTetris(){
 }
 
 function keyPressed() {
-  if (keyCode === 68){
-    piece.pieceMovement(1, 0);
+  if (piece.currentPiecePos.x < width/2){
+    if (key === "d"){
+      piece.pieceMovement(1, 0);
+    }
+    if (key === "a"){
+      piece.pieceMovement(-1, 0);
+    }
+    if (key === "r"){
+      piece.rotate();
+    }
   }
-  if (keyCode === 65){
-    piece.pieceMovement(-1, 0);
-  }
+}
+
+function lineChecker(x, y) {
+
 }
 
 // code when the game is done
@@ -148,9 +157,6 @@ class Piece {
       this.currentPiece = this.reverseZblock;
       break;
     }
-
-    this.currentPiecePos.x = 3;
-    this.currentPiecePos.y = 0;
   }
 
   drawPiece() {
@@ -159,7 +165,8 @@ class Piece {
         if (this.currentPiece[y][x] === 1){
           fill("red");
           strokeWeight(0);
-          rect((this.currentPiecePos.x + x)*playfield.cellWidth, this.currentPiecePos.y + y*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
+          rect((this.currentPiecePos.x + x)*playfield.cellWidth, this.currentPiecePos.y + y*playfield.cellHeight, 
+          playfield.cellWidth, playfield.cellHeight);
         }
       }
     }
@@ -168,6 +175,26 @@ class Piece {
   pieceMovement(x, y) {
     this.currentPiecePos.x += x;
     this.currentPiecePos.y += y;
+  }
+
+  rotate() {
+    let tempPiece = [];
+    // copies the current piece 
+    for (let i = 0; i < this.currentPiece.length; i++) {
+      tempPiece[i] = [];
+      for (let j = 0; j < this.currentPiece[0].length; j++) {
+        tempPiece[i][j] = this.currentPiece[i][j];
+      }
+    }
+    
+    let tempRotatedPiece = [];
+    for (let i = 0; i < this.currentPiece.length; i++) {
+      tempRotatedPiece[i] = [];
+      for (let j = 0; j < this.currentPiece[0].length; j++) {
+        tempRotatedPiece[i][j] = tempPiece[this.currentPiece[0].length - j - 1][i];
+      }
+    }
+    this.currentPiece = tempRotatedPiece;
   }
 }
 
@@ -206,18 +233,5 @@ class Playfield {
     line(0, 0, width/2, 0); // top line
     line(0, 0, 0, height); // left line
     line(width/2, 0, width/2, height); // right line 
-  }
-
-  lineChecker() {
-    for (let y=0; y<this.height; y++){
-      for (let x=0; x<this.width; x++){
-        if (grid[y] !== 22){
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-    }
   }
 }
