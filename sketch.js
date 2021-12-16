@@ -32,15 +32,15 @@ function setup() {
 function draw() {
   background(220);
 
+  // enters the games
   if (tetris){
     background("white");
     drawButton.remove();
     playfield.displayBoard();
     piece.drawPiece();
 
-
     if (millis() > time + 750) {
-      if (piece.currentPiecePos.y < width/2){
+      if (piece.currentPiecePos.y < playfield.cellHeight){
         time = millis();
         piece.pieceMovement(0, playfield.cellHeight);
       }
@@ -161,12 +161,11 @@ class Piece {
 
   drawPiece() {
     for (let y=0; y<this.currentPiece.length; y++){
-      for (let x=0; x<this.currentPiece[0].length; x++){
+      for (let x=0; x<this.currentPiece[y].length; x++){
         if (this.currentPiece[y][x] === 1){
           fill("red");
           strokeWeight(0);
-          rect((this.currentPiecePos.x + x)*playfield.cellWidth, this.currentPiecePos.y + y*playfield.cellHeight, 
-          playfield.cellWidth, playfield.cellHeight);
+          rect((this.currentPiecePos.x + x)*playfield.cellWidth, this.currentPiecePos.y + y*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
         }
       }
     }
@@ -190,8 +189,8 @@ class Piece {
     let tempRotatedPiece = [];
     for (let i = 0; i < this.currentPiece.length; i++) {
       tempRotatedPiece[i] = [];
-      for (let j = 0; j < this.currentPiece[0].length; j++) {
-        tempRotatedPiece[i][j] = tempPiece[this.currentPiece[0].length - j - 1][i];
+      for (let j = 0; j < this.currentPiece[i].length; j++) {
+        tempRotatedPiece[i][j] = tempPiece[this.currentPiece[i].length - j - 1][i];
       }
     }
     this.currentPiece = tempRotatedPiece;
