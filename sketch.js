@@ -40,7 +40,7 @@ function draw() {
     piece.drawPiece();
 
     if (millis() > time + 750) {
-      if (piece.currentPiecePos.y < playfield.cellHeight){
+      if (piece.currentPiecePos.y < height){
         time = millis();
         piece.pieceMovement(0, playfield.cellHeight);
       }
@@ -53,9 +53,11 @@ function enterTetris(){
 }
 
 function keyPressed() {
-  if (piece.currentPiecePos.x < width/2){
+ 
     if (key === "d"){
-      piece.pieceMovement(1, 0);
+      if (piece.currentPiecePos.x < 10){
+        piece.pieceMovement(1, 0);
+      }
     }
     if (key === "a"){
       piece.pieceMovement(-1, 0);
@@ -63,7 +65,6 @@ function keyPressed() {
     if (key === "r"){
       piece.rotate();
     }
-  }
 }
 
 function lineChecker(x, y) {
