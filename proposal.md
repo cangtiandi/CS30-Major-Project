@@ -6,7 +6,7 @@
 ## Must Have List
 - 7 different block
 - Score counter 
-- Ghost piece that shows you where to piece is gonna drop
+- Piece Rotates 
 - Audio and music
 - Lines clearly themselves when they're full
 - Piece fall automatically
@@ -16,3 +16,4 @@
 - The speed changes when the score reaches a certain amount
 - Hard drop
 - A holder that holds your piece
+- Ghost piece that shows you where to piece is gonna drop
