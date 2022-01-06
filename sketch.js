@@ -39,8 +39,9 @@ function draw() {
     playfield.displayBoard();
     piece.drawPiece();
 
-    if (millis() > time + 750) {
-      if (piece.currentPiecePos.y < height){
+    // falling piece
+    if (collisionChecker(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0)){
+      if (millis() > time + 750) {
         time = millis();
         piece.pieceMovement(0, playfield.cellHeight);
       }
@@ -53,23 +54,43 @@ function enterTetris(){
 }
 
 function keyPressed() {
- 
-    if (key === "d"){
-      if (piece.currentPiecePos.x < 10){
-        piece.pieceMovement(1, 0);
+  if (key === "d"){
+    piece.pieceMovement(1, 0);
+  }
+  if (key === "a"){
+    piece.pieceMovement(-1, 0);
+  }
+  if (key === "r"){
+    piece.rotate();
+  }
+}
+
+function collisionChecker(piece, posX, posY, directionX, directionY) {
+  for (let i = 0; i < piece.length; i++) {
+    for (let j = 0; j < piece[i].length; j++) {
+      if (piece[i][j] === 1) {
+
+        let targetRow = posY + i + directionY;
+        let targetCol = posX + j + directionX;
+
+        if (targetRow >= playfield.height) {
+          return true;
+        } 
+        // hitting placed mino
+        else if (grid[targetRow][targetCol] === 1) {
+
+          return true;
+
+        } 
+        else if (targetCol >= playfield.width || targetCol < 0) {
+          return true;
+        }
       }
     }
-    if (key === "a"){
-      piece.pieceMovement(-1, 0);
-    }
-    if (key === "r"){
-      piece.rotate();
-    }
+  }
+  return false;
 }
 
-function lineChecker(x, y) {
-
-}
 
 // code when the game is done
 // function enterInstructions() {
@@ -90,10 +111,10 @@ class Piece {
     ];
 
     this.lineBlock = [
-      [1, 1, 1, 1],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
     ];
 
     this.tBlock = [
@@ -128,7 +149,7 @@ class Piece {
   } 
 
   spawnPiece() {
-    let choice = floor(random(1, 7));
+    let choice = floor(random(0, 6));
     switch (choice){
     case 0:
       this.currentPiece = this.squareBlock;
@@ -164,7 +185,7 @@ class Piece {
     for (let y=0; y<this.currentPiece.length; y++){
       for (let x=0; x<this.currentPiece[y].length; x++){
         if (this.currentPiece[y][x] === 1){
-          fill("red");
+          fill("blue");
           strokeWeight(0);
           rect((this.currentPiecePos.x + x)*playfield.cellWidth, this.currentPiecePos.y + y*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
         }
@@ -173,8 +194,10 @@ class Piece {
   }
 
   pieceMovement(x, y) {
-    this.currentPiecePos.x += x;
-    this.currentPiecePos.y += y;
+    if (!collisionChecker(this.currentPiece, this.currentPiecePos.x, this.currentPiecePos.y, x, y)){
+      this.currentPiecePos.x += x;
+      this.currentPiecePos.y += y;
+    }
   }
 
   rotate() {
@@ -186,7 +209,7 @@ class Piece {
         tempPiece[i][j] = this.currentPiece[i][j];
       }
     }
-    
+    // rotates clockwise
     let tempRotatedPiece = [];
     for (let i = 0; i < this.currentPiece.length; i++) {
       tempRotatedPiece[i] = [];
@@ -196,6 +219,8 @@ class Piece {
     }
     this.currentPiece = tempRotatedPiece;
   }
+
+
 }
 
 class Playfield {
