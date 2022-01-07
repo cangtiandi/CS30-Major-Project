@@ -40,11 +40,9 @@ function draw() {
     piece.drawPiece();
 
     // falling piece
-    if (collisionChecker(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0)){
-      if (millis() > time + 750) {
-        time = millis();
-        piece.pieceMovement(0, playfield.cellHeight);
-      }
+    if (millis() > time + 750) {
+      time = millis();
+      piece.pieceMovement(0, 1);
     }
   }
 }
@@ -65,7 +63,7 @@ function keyPressed() {
   }
 }
 
-function collisionChecker(piece, posX, posY, directionX, directionY) {
+function ifHitting(piece, posX, posY, directionX, directionY) {
   for (let i = 0; i < piece.length; i++) {
     for (let j = 0; j < piece[i].length; j++) {
       if (piece[i][j] === 1) {
@@ -187,14 +185,14 @@ class Piece {
         if (this.currentPiece[y][x] === 1){
           fill("blue");
           strokeWeight(0);
-          rect((this.currentPiecePos.x + x)*playfield.cellWidth, this.currentPiecePos.y + y*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
+          rect((this.currentPiecePos.x + x)*playfield.cellWidth, (this.currentPiecePos.y + y)*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
         }
       }
     }
   }
 
   pieceMovement(x, y) {
-    if (!collisionChecker(this.currentPiece, this.currentPiecePos.x, this.currentPiecePos.y, x, y)){
+    if (!ifHitting(this.currentPiece, this.currentPiecePos.x, this.currentPiecePos.y, x, y)){
       this.currentPiecePos.x += x;
       this.currentPiecePos.y += y;
     }
@@ -217,7 +215,9 @@ class Piece {
         tempRotatedPiece[i][j] = tempPiece[this.currentPiece[i].length - j - 1][i];
       }
     }
-    this.currentPiece = tempRotatedPiece;
+    if (!ifHitting(tempRotatedPiece, this.currentPiecePos.x, this.currentPiecePos.y, 0,0)){
+      this.currentPiece = tempRotatedPiece;
+    }
   }
 
 
