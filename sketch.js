@@ -1,5 +1,6 @@
 let grid;
 
+
 let drawButton, playButton;
 let piece, playfield;
 
@@ -41,8 +42,13 @@ function draw() {
 
     // falling piece
     if (millis() > time + 750) {
+      if (ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)){
+        playfield.commitPieceToBoard;
+      }
+      else{
+        piece.pieceMovement(0, 1);
+      }
       time = millis();
-      piece.pieceMovement(0, 1);
     }
   }
 }
@@ -57,6 +63,9 @@ function keyPressed() {
   }
   if (key === "a"){
     piece.pieceMovement(-1, 0);
+  }
+  if (key === " "){
+    piece.currentPiecePos.y = 20;
   }
   if (key === "r"){
     piece.rotate();
@@ -121,25 +130,25 @@ class Piece {
       [0, 0, 0]
     ];
     
-    this.lblock = [
+    this.lBlock = [
       [1, 0, 0],
       [1, 1, 1],
       [0, 0, 0]
     ];
 
-    this.reverseLblock = [
+    this.reverseLBlock = [
       [0, 0, 1],
       [1, 1, 1],
       [0, 0, 0]
     ];
 
-    this.zblock = [
+    this.zBlock = [
       [1, 1, 0],
       [0, 1, 1],
       [0, 0, 0]
     ];
     
-    this.reverseZblock = [
+    this.reverseZBlock = [
       [0, 1, 1],
       [1, 1, 0],
       [0, 0, 0]
@@ -162,19 +171,19 @@ class Piece {
       break;
 
     case 3:
-      this.currentPiece = this.lblock;
+      this.currentPiece = this.lBlock;
       break;
     
     case 4:
-      this.currentPiece = this.reverseLblock;
+      this.currentPiece = this.reverseLBlock;
       break;
 
     case 5:
-      this.currentPiece = this.zblock;
+      this.currentPiece = this.zBlock;
       break;
 
     case 6:
-      this.currentPiece = this.reverseZblock;
+      this.currentPiece = this.reverseZBlock;
       break;
     }
   }
@@ -203,7 +212,7 @@ class Piece {
     // copies the current piece 
     for (let i = 0; i < this.currentPiece.length; i++) {
       tempPiece[i] = [];
-      for (let j = 0; j < this.currentPiece[0].length; j++) {
+      for (let j = 0; j < this.currentPiece[i].length; j++) {
         tempPiece[i][j] = this.currentPiece[i][j];
       }
     }
@@ -219,10 +228,7 @@ class Piece {
       this.currentPiece = tempRotatedPiece;
     }
   }
-
-
 }
-
 class Playfield {
   constructor() {
     this.width = 10;
@@ -258,5 +264,15 @@ class Playfield {
     line(0, 0, width/2, 0); // top line
     line(0, 0, 0, height); // left line
     line(width/2, 0, width/2, height); // right line 
+  }
+
+  commitPieceToBoard() {
+    for (let i=0; i<piece.currentPiece.length; i++){
+      for (let j=0; j<piece.currentPiece.length[i]; j++){
+        if (piece.currentPiece[i][j] === 1){
+          grid[y + i][x + j];
+        }
+      }
+    }
   }
 }
