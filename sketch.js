@@ -43,7 +43,7 @@ function draw() {
     // falling piece
     if (millis() > time + 750) {
       if (ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)){
-        playfield.commitPieceToBoard;
+        piece.commitPieceToBoard();
       }
       else{
         piece.pieceMovement(0, 1);
@@ -80,15 +80,15 @@ function ifHitting(piece, posX, posY, directionX, directionY) {
         let targetRow = posY + i + directionY;
         let targetCol = posX + j + directionX;
 
+        // bottom 
         if (targetRow >= playfield.height) {
           return true;
         } 
         // hitting placed mino
         else if (grid[targetRow][targetCol] === 1) {
-
           return true;
-
         } 
+        // left and right border
         else if (targetCol >= playfield.width || targetCol < 0) {
           return true;
         }
@@ -186,6 +186,10 @@ class Piece {
       this.currentPiece = this.reverseZBlock;
       break;
     }
+    this.currentPiecePos = {
+      x: 3, 
+      y: 0,
+    };
   }
 
   drawPiece() {
@@ -228,7 +232,22 @@ class Piece {
       this.currentPiece = tempRotatedPiece;
     }
   }
+
+  commitPieceToBoard() {
+    let x = this.currentPiecePos.x;
+    let y = this.currentPiecePos.y;
+  
+    for (let i = 0; i < this.currentPiece.length; i++) {
+      for (let j = 0; j < this.currentPiece[i].length; j++) {
+        if (this.currentPiece[i][j] === 1) {
+          grid[y + i][x + j] = 1;
+        }
+      }
+    }
+    this.spawnPiece();
+  }
 }
+
 class Playfield {
   constructor() {
     this.width = 10;
@@ -264,15 +283,5 @@ class Playfield {
     line(0, 0, width/2, 0); // top line
     line(0, 0, 0, height); // left line
     line(width/2, 0, width/2, height); // right line 
-  }
-
-  commitPieceToBoard() {
-    for (let i=0; i<piece.currentPiece.length; i++){
-      for (let j=0; j<piece.currentPiece.length[i]; j++){
-        if (piece.currentPiece[i][j] === 1){
-          grid[y + i][x + j];
-        }
-      }
-    }
   }
 }
