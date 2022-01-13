@@ -1,6 +1,5 @@
 let grid;
 
-
 let drawButton, playButton;
 let piece, playfield;
 
@@ -12,6 +11,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   piece = new Piece;
   playfield = new Playfield;
+
   grid = playfield.createTetris2DArray();
 
   // Start menu
@@ -104,9 +104,53 @@ function ifHitting(piece, posX, posY, directionX, directionY) {
 //   text("Press space to harddrop");
 // }
 
+class Playfield {
+  constructor() {
+    this.width = 10;
+    this.height = 22;
+    this.cellWidth = width/2/this.width;
+    this.cellHeight = height/this.height;
+  }
+
+  createTetris2DArray(){
+    let grid = [];
+    for (let y=0; y<this.height; y++){
+      grid.push([]);
+      for (let x=0; x<this.height; x++){
+        grid[y].push(0);
+      }
+    }
+    return grid;
+  }
+
+  displayBoard(){
+    for (let y=0; y<this.height; y++){
+      for (let x=0; x<this.width; x++){
+        if (grid[y][x] === 0){
+          fill(220);
+        }
+        if (grid[y][x] === 1){
+          fill("blue");
+        }
+        strokeWeight(0.1);
+        rect(x*this.cellWidth, y*this.cellHeight, this.cellWidth, this.cellHeight);
+      }
+    }
+
+    // border for the grid(too lazy to figure anything else)
+    strokeWeight(4);
+    line(0, 0, width/2, 0); // top line
+    line(0, 0, 0, height); // left line
+    line(width/2, 0, width/2, height); // right line 
+  }
+}
+
+
 class Piece { 
   constructor() {
+    this.gamePlayField = new Playfield;
     this.currentPiece = [];
+    this.gameGrid = this.gamePlayField.createTetris2DArray();
     this.currentPiecePos = {
       x: 3, 
       y: 0,
@@ -240,48 +284,11 @@ class Piece {
     for (let i = 0; i < this.currentPiece.length; i++) {
       for (let j = 0; j < this.currentPiece[i].length; j++) {
         if (this.currentPiece[i][j] === 1) {
-          grid[y + i][x + j] = 1;
+          this.gameGrid[i + y][j + x] = 1;
         }
       }
     }
-    this.spawnPiece();
-  }
-}
-
-class Playfield {
-  constructor() {
-    this.width = 10;
-    this.height = 22;
-    this.cellWidth = width/2/this.width;
-    this.cellHeight = height/this.height;
-  }
-
-  createTetris2DArray(){
-    let grid = [];
-    for (let y=0; y<this.height; y++){
-      grid.push([]);
-      for (let x=0; x<this.height; x++){
-        grid[y].push(0);
-      }
-    }
-    return grid;
-  }
-
-  displayBoard(){
-    for (let y=0; y<this.height; y++){
-      for (let x=0; x<this.width; x++){
-        if (grid[y][x] === 0){
-          fill(220);
-        }
-        strokeWeight(0.1);
-        rect(x*this.cellWidth, y*this.cellHeight, this.cellWidth, this.cellHeight);
-      }
-    }
-
-    // border for the grid(too lazy to figure anything else)
-    strokeWeight(4);
-    line(0, 0, width/2, 0); // top line
-    line(0, 0, 0, height); // left line
-    line(width/2, 0, width/2, height); // right line 
+    grid = this.gameGrid;
+    this.spawnPiece(); 
   }
 }
