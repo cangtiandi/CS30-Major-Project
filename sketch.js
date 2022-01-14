@@ -65,7 +65,9 @@ function keyPressed() {
     piece.pieceMovement(-1, 0);
   }
   if (key === " "){
-    piece.currentPiecePos.y = 20;
+    if (!ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)) {
+      piece.currentPiecePos.y += 19;
+    }
   }
   if (key === "r"){
     piece.rotate();
@@ -148,9 +150,9 @@ class Playfield {
 
 class Piece { 
   constructor() {
-    this.gamePlayField = new Playfield;
+    this.gamePlayfield = new Playfield;
     this.currentPiece = [];
-    this.gameGrid = this.gamePlayField.createTetris2DArray();
+    this.gameGrid = this.gamePlayfield.createTetris2DArray();
     this.currentPiecePos = {
       x: 3, 
       y: 0,
@@ -277,6 +279,34 @@ class Piece {
     }
   }
 
+  clearLines() {
+    // checks if the line is full
+    let i = playfield.height-1
+    while (i >= 0) {
+      let isLineClear = true;
+      for (let j = 0; j < playfield.width; j++) {
+        if (grid[i][j] == 0) {
+          isLineClear = false;
+          break;
+        }
+      }
+      // clears line
+      if (isLineClear) {
+        for (let j = 0; j < playfield.width; j++) {
+          grid[i][j] = 0;
+        }
+        // moves the everything down
+        for (let row = i; row > 0; row--) {
+          for (let col = 0; col < playfield.width; col++) {
+            grid[row][col] = grid[row-1][col]
+          }
+        }
+        i++
+      }
+      i--
+    }
+  }
+
   commitPieceToBoard() {
     let x = this.currentPiecePos.x;
     let y = this.currentPiecePos.y;
@@ -290,5 +320,6 @@ class Piece {
     }
     grid = this.gameGrid;
     this.spawnPiece(); 
+    this.clearLines();
   }
 }
