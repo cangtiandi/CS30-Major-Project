@@ -8,7 +8,7 @@
 - Score counter 
 - Piece Rotates ✓
 - Audio and music
-- Lines clear themselves when they're full
+- Lines clear themselves when they're full ✓
 - Piece fall automatically ✓
 
 ## Nice to Have List

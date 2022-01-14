@@ -50,6 +50,12 @@ function draw() {
       }
       time = millis();
     }
+
+
+    // score counter 
+    if (piece.clearLines() === false){
+      score += 100;
+    }
   }
 }
 
@@ -65,9 +71,7 @@ function keyPressed() {
     piece.pieceMovement(-1, 0);
   }
   if (key === " "){
-    if (!ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)) {
-      piece.currentPiecePos.y += 19;
-    }
+    piece.hardDrop();
   }
   if (key === "r"){
     piece.rotate();
@@ -279,13 +283,20 @@ class Piece {
     }
   }
 
+  hardDrop() {
+    while (this.currentPiecePos.y + this.currentPiece.length <= 23 && 
+      !ifHitting(this.currentPiece, this.currentPiecePos.x, this.currentPiecePos.y, 0,1)){
+      this.currentPiecePos.y++;
+    }
+  }
+
   clearLines() {
-    // checks if the line is full
-    let i = playfield.height-1
+  // checks if the line is full
+    let i = playfield.height-1;
     while (i >= 0) {
       let isLineClear = true;
       for (let j = 0; j < playfield.width; j++) {
-        if (grid[i][j] == 0) {
+        if (grid[i][j] === 0) {
           isLineClear = false;
           break;
         }
@@ -298,13 +309,34 @@ class Piece {
         // moves the everything down
         for (let row = i; row > 0; row--) {
           for (let col = 0; col < playfield.width; col++) {
-            grid[row][col] = grid[row-1][col]
+            grid[row][col] = grid[row-1][col];
           }
         }
-        i++
+        i++;
       }
-      i--
+      i--;
     }
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
 
   commitPieceToBoard() {
