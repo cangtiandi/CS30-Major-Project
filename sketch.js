@@ -23,11 +23,11 @@ function setup() {
 
   piece.spawnPiece();
 
-  // How to play Button todo  
-  // playButton  = createButton("instructions");
-  // playButton.position(width/2,height/2+150);
-  // playButton.size(100,50);
-  // playButton.mouseClicked(enterInstructions);
+  //How to play Button todo  
+  playButton  = createButton("instructions");
+  playButton.position(width/2,height/2+150);
+  playButton.size(100,50);
+  //playButton.mouseClicked(enterInstructions);
 }
 
 function draw() {
@@ -40,6 +40,8 @@ function draw() {
     playfield.displayBoard();
     piece.drawPiece();
 
+    text("Score = " + score, -width);
+
     // falling piece
     if (millis() > time + 750) {
       if (ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)){
@@ -49,12 +51,6 @@ function draw() {
         piece.pieceMovement(0, 1);
       }
       time = millis();
-    }
-
-
-    // score counter 
-    if (piece.clearLines() === false){
-      score += 100;
     }
   }
 }
@@ -69,6 +65,9 @@ function keyPressed() {
   }
   if (key === "a"){
     piece.pieceMovement(-1, 0);
+  }
+  if (key === "s"){
+    piece.pieceMovement(0, 1);
   }
   if (key === " "){
     piece.hardDrop();
@@ -136,7 +135,7 @@ class Playfield {
           fill(220);
         }
         if (grid[y][x] === 1){
-          fill("blue");
+          fill("gray");
         }
         strokeWeight(0.1);
         rect(x*this.cellWidth, y*this.cellHeight, this.cellWidth, this.cellHeight);
@@ -157,6 +156,7 @@ class Piece {
     this.gamePlayfield = new Playfield;
     this.currentPiece = [];
     this.gameGrid = this.gamePlayfield.createTetris2DArray();
+    this.colors = ["lightblue", "blue", "orange", "yellow", "lightgreen", "purple", "red"];
     this.currentPiecePos = {
       x: 3, 
       y: 0,
@@ -246,7 +246,7 @@ class Piece {
     for (let y=0; y<this.currentPiece.length; y++){
       for (let x=0; x<this.currentPiece[y].length; x++){
         if (this.currentPiece[y][x] === 1){
-          fill("blue");
+          fill(random(this.colors));
           strokeWeight(0);
           rect((this.currentPiecePos.x + x)*playfield.cellWidth, (this.currentPiecePos.y + y)*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
         }
@@ -306,6 +306,7 @@ class Piece {
         for (let j = 0; j < playfield.width; j++) {
           grid[i][j] = 0;
         }
+        score += 100;
         // moves the everything down
         for (let row = i; row > 0; row--) {
           for (let col = 0; col < playfield.width; col++) {
@@ -316,26 +317,6 @@ class Piece {
       }
       i--;
     }
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   }
 
