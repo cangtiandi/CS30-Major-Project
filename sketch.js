@@ -4,8 +4,13 @@ let drawButton, playButton;
 let piece, playfield;
 
 let tetris = false;
+let isGameOver = false;
 let score = 0;
 let time = 0;
+
+function preload() {
+  theGameOver = loadImage("assets/Game Over.png");
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -32,25 +37,29 @@ function setup() {
 
 function draw() {
   background(220);
+  gameOver();
 
   // enters the games
   if (tetris){
+    if(isGameOver === false){
     background("white");
     drawButton.remove();
+    playButton.remove();
     playfield.displayBoard();
     piece.drawPiece();
-
-    text("Score = " + score, -width);
-
-    // falling piece
-    if (millis() > time + 750) {
-      if (ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)){
-        piece.commitPieceToBoard();
+  
+      text("Score = " + score, 500, 500, 500, 500);
+  
+      // falling piece
+      if (millis() > time + 750) {
+        if (ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)){
+          piece.commitPieceToBoard();
+        }
+        else{
+          piece.pieceMovement(0, 1);
+        }
+        time = millis();
       }
-      else{
-        piece.pieceMovement(0, 1);
-      }
-      time = millis();
     }
   }
 }
@@ -104,6 +113,23 @@ function ifHitting(piece, posX, posY, directionX, directionY) {
 }
 
 
+function gameOver() {
+  if (isGameOver){
+    for (let y=0; y<gridSize; y++){
+      for (let x=0; x<gridSize; x++){
+        if (grid[y][x] !== 2){
+          grid[y][x] = 2;
+          background("black"); // turns background into black
+        }
+      }
+    }
+
+    // displays game over screen
+    imageMode(CENTER);
+    image(theGameOver, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+  }
+}
+
 // code when the game is done
 // function enterInstructions() {
 //   text("Press space to harddrop");
@@ -137,6 +163,9 @@ class Playfield {
         if (grid[y][x] === 1){
           fill("gray");
         }
+        if (grid[y][x] === 2){
+          fill("black");
+        }
         strokeWeight(0.1);
         rect(x*this.cellWidth, y*this.cellHeight, this.cellWidth, this.cellHeight);
       }
@@ -156,7 +185,7 @@ class Piece {
     this.gamePlayfield = new Playfield;
     this.currentPiece = [];
     this.gameGrid = this.gamePlayfield.createTetris2DArray();
-    this.colors = ["lightblue", "blue", "orange", "yellow", "lightgreen", "purple", "red"];
+    this.colors = random(["lightblue", "blue", "orange", "yellow", "lightgreen", "purple", "red"]);
     this.currentPiecePos = {
       x: 3, 
       y: 0,
@@ -246,7 +275,7 @@ class Piece {
     for (let y=0; y<this.currentPiece.length; y++){
       for (let x=0; x<this.currentPiece[y].length; x++){
         if (this.currentPiece[y][x] === 1){
-          fill(random(this.colors));
+          fill(this.colors);
           strokeWeight(0);
           rect((this.currentPiecePos.x + x)*playfield.cellWidth, (this.currentPiecePos.y + y)*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
         }
@@ -301,7 +330,7 @@ class Piece {
           break;
         }
       }
-      // clears line
+      // clears line and adds score
       if (isLineClear) {
         for (let j = 0; j < playfield.width; j++) {
           grid[i][j] = 0;
@@ -317,7 +346,6 @@ class Piece {
       }
       i--;
     }
-
   }
 
   commitPieceToBoard() {
@@ -332,7 +360,15 @@ class Piece {
       }
     }
     grid = this.gameGrid;
+    this.gameOverChecker();
     this.spawnPiece(); 
     this.clearLines();
+  }
+
+  // checks if you lose the game
+  gameOverChecker() {
+    if (ifHitting(this.currentPiece, this.currentPiecePos.x, this.currentPiecePos.y, 0, 0) && grid[y] === 0){
+      isGameOver = true;
+  }
   }
 }
