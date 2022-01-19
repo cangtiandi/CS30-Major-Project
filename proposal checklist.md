@@ -5,7 +5,7 @@
 
 ## Must Have List
 - 7 different block ✓
-- Score counter 
+- Score counter ✓
 - Piece Rotates ✓
 - Audio and music
 - Lines clear themselves when they're full ✓

@@ -1,23 +1,31 @@
 let grid;
 
-let drawButton, playButton;
+let drawButton, playButton, retry;
 let piece, playfield;
 
 let tetris = false;
 let isGameOver = false;
+let speed = 0;
 let score = 0;
 let time = 0;
 
+let theGameOver, logo;
+let tetrisTheme;
+
 function preload() {
   theGameOver = loadImage("assets/Game Over.png");
+  logo = loadImage("assets/Tetris logo.png");
+  tetrisTheme = loadSound("assets/Tetris Theme.mp3");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
   piece = new Piece;
   playfield = new Playfield;
 
   grid = playfield.createTetris2DArray();
+  imageMode(CENTER);
 
   // Start menu
   drawButton = createButton("start");
@@ -25,33 +33,37 @@ function setup() {
   drawButton.size(100,100);
   drawButton.mouseClicked(enterTetris);
 
-
-  piece.spawnPiece();
-
-  //How to play Button todo  
+  //How to play Button  
   playButton  = createButton("instructions");
   playButton.position(width/2,height/2+150);
   playButton.size(100,50);
-  //playButton.mouseClicked(enterInstructions);
+  playButton.mouseClicked(enterInstructions);
+
+  piece.spawnPiece();
 }
 
 function draw() {
   background(220);
-  gameOver();
 
+  piece.gameOver();
+  tetrisTheme.play(0, 1, 1, 0);
   // enters the games
-  if (tetris){
-    if(isGameOver === false){
-    background("white");
-    drawButton.remove();
-    playButton.remove();
-    playfield.displayBoard();
-    piece.drawPiece();
-  
-      text("Score = " + score, 500, 500, 500, 500);
+  if(isGameOver === false){
+    image(logo, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+    if (tetris){
+      background("white");
+
+      drawButton.remove();
+      playButton.remove();
+
+      playfield.displayBoard();
+      piece.drawPiece();
+
+      textSize(100);
+      text("Score = " + score, 500, height - 500, 500, 500);
   
       // falling piece
-      if (millis() > time + 750) {
+      if (millis() > time + (750 - speed)) {
         if (ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)){
           piece.commitPieceToBoard();
         }
@@ -59,6 +71,10 @@ function draw() {
           piece.pieceMovement(0, 1);
         }
         time = millis();
+      }
+
+      if (keyIsDown(83)){
+        piece.pieceMovement(0, 1);
       }
     }
   }
@@ -75,17 +91,20 @@ function keyPressed() {
   if (key === "a"){
     piece.pieceMovement(-1, 0);
   }
-  if (key === "s"){
-    piece.pieceMovement(0, 1);
-  }
   if (key === " "){
     piece.hardDrop();
   }
   if (key === "r"){
     piece.rotate();
   }
+
+  // debugger 
+  if (key === "f"){
+    score += 100;
+  }
 }
 
+// collision checker 
 function ifHitting(piece, posX, posY, directionX, directionY) {
   for (let i = 0; i < piece.length; i++) {
     for (let j = 0; j < piece[i].length; j++) {
@@ -95,7 +114,7 @@ function ifHitting(piece, posX, posY, directionX, directionY) {
         let targetCol = posX + j + directionX;
 
         // bottom 
-        if (targetRow >= playfield.height) {
+        if (targetRow >= playfield.height || targetRow < 0) {
           return true;
         } 
         // hitting placed mino
@@ -113,27 +132,9 @@ function ifHitting(piece, posX, posY, directionX, directionY) {
 }
 
 
-function gameOver() {
-  if (isGameOver){
-    for (let y=0; y<gridSize; y++){
-      for (let x=0; x<gridSize; x++){
-        if (grid[y][x] !== 2){
-          grid[y][x] = 2;
-          background("black"); // turns background into black
-        }
-      }
-    }
-
-    // displays game over screen
-    imageMode(CENTER);
-    image(theGameOver, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-  }
+function enterInstructions() {
+  text("Press space to harddrop", 100, 100, 100 , 100);
 }
-
-// code when the game is done
-// function enterInstructions() {
-//   text("Press space to harddrop");
-// }
 
 class Playfield {
   constructor() {
@@ -163,7 +164,7 @@ class Playfield {
         if (grid[y][x] === 1){
           fill("gray");
         }
-        if (grid[y][x] === 2){
+        else if (grid[y][x] === 2){
           fill("black");
         }
         strokeWeight(0.1);
@@ -185,7 +186,7 @@ class Piece {
     this.gamePlayfield = new Playfield;
     this.currentPiece = [];
     this.gameGrid = this.gamePlayfield.createTetris2DArray();
-    this.colors = random(["lightblue", "blue", "orange", "yellow", "lightgreen", "purple", "red"]);
+    this.colors = ["lightblue", "blue", "orange", "yellow", "lightgreen", "purple", "red"];
     this.currentPiecePos = {
       x: 3, 
       y: 0,
@@ -275,7 +276,7 @@ class Piece {
     for (let y=0; y<this.currentPiece.length; y++){
       for (let x=0; x<this.currentPiece[y].length; x++){
         if (this.currentPiece[y][x] === 1){
-          fill(this.colors);
+          fill("black");
           strokeWeight(0);
           rect((this.currentPiecePos.x + x)*playfield.cellWidth, (this.currentPiecePos.y + y)*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
         }
@@ -336,6 +337,10 @@ class Piece {
           grid[i][j] = 0;
         }
         score += 100;
+
+        if (score % 1000 === 0 ) {
+          speed -= -50;
+        }
         // moves the everything down
         for (let row = i; row > 0; row--) {
           for (let col = 0; col < playfield.width; col++) {
@@ -360,15 +365,27 @@ class Piece {
       }
     }
     grid = this.gameGrid;
-    this.gameOverChecker();
     this.spawnPiece(); 
     this.clearLines();
   }
 
-  // checks if you lose the game
-  gameOverChecker() {
-    if (ifHitting(this.currentPiece, this.currentPiecePos.x, this.currentPiecePos.y, 0, 0) && grid[y] === 0){
+  gameOver() {
+    // checks if game is over 
+    if (this.currentPiecePos.y === 0 && ifHitting(this.currentPiece, this.currentPiecePos.x, this.currentPiecePos.y, 0, 0)){
       isGameOver = true;
-  }
+    }
+    if (isGameOver){
+      background("black");
+      for (let y=0; y<playfield.height; y++){
+        for (let x=0; x<playfield.width; x++){
+          if (grid[y][x] !== 2){
+            grid[y][x] = 2;
+          }
+        }
+      }
+      
+      // displays game over screen
+      image(theGameOver, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+    }
   }
 }
