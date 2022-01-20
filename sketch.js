@@ -9,13 +9,17 @@ let speed = 0;
 let score = 0;
 let time = 0;
 
+let music = true;
+
 let theGameOver, logo;
 let tetrisTheme;
+let lineClearSound;
 
 function preload() {
   theGameOver = loadImage("assets/Game Over.png");
   logo = loadImage("assets/Tetris logo.png");
   tetrisTheme = loadSound("assets/Tetris Theme.mp3");
+  lineClearSound = loadSound("assets/Line Clear.mp3");
 }
 
 function setup() {
@@ -29,15 +33,9 @@ function setup() {
 
   // Start menu
   drawButton = createButton("start");
-  drawButton.position(width/2,height/2);
+  drawButton.position(width/2 - 100 ,height/2);
   drawButton.size(100,100);
   drawButton.mouseClicked(enterTetris);
-
-  //How to play Button  
-  playButton  = createButton("instructions");
-  playButton.position(width/2,height/2+150);
-  playButton.size(100,50);
-  playButton.mouseClicked(enterInstructions);
 
   piece.spawnPiece();
 }
@@ -46,21 +44,25 @@ function draw() {
   background(220);
 
   piece.gameOver();
-  tetrisTheme.play(0, 1, 1, 0);
   // enters the games
   if(isGameOver === false){
-    image(logo, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+    image(logo, width/2, height/2 - 200, 800, 500);
     if (tetris){
+      // plays music
+      if (music){
+        tetrisTheme.play();
+        music = false;
+      }
+
       background("white");
 
       drawButton.remove();
-      playButton.remove();
 
       playfield.displayBoard();
       piece.drawPiece();
 
       textSize(100);
-      text("Score = " + score, 500, height - 500, 500, 500);
+      text("Score = " + score, 850, height - 750, 500, 500);
   
       // falling piece
       if (millis() > time + (750 - speed)) {
@@ -129,11 +131,6 @@ function ifHitting(piece, posX, posY, directionX, directionY) {
     }
   }
   return false;
-}
-
-
-function enterInstructions() {
-  text("Press space to harddrop", 100, 100, 100 , 100);
 }
 
 class Playfield {
@@ -275,12 +272,33 @@ class Piece {
   drawPiece() {
     for (let y=0; y<this.currentPiece.length; y++){
       for (let x=0; x<this.currentPiece[y].length; x++){
+        // may use better ways later
         if (this.currentPiece[y][x] === 1){
-          fill("black");
+          if (this.currentPiece === this.squareBlock){
+            fill("lightblue");
+          }
+          if (this.currentPiece === this.lineBlock){
+            fill("blue");
+          }
+          if (this.currentPiece === this.tBlock){
+            fill("orange");
+          }
+          if (this.currentPiece === this.lBlock){
+            fill("yellow");
+          }
+          if (this.currentPiece === this.reverseLBlock){
+            fill("lightgreen");
+          }
+          if (this.currentPiece === this.zBlock){
+            fill("purple");
+          }
+          if (this.currentPiece === this.reverseZBlock){
+            fill("red");
+          }
           strokeWeight(0);
           rect((this.currentPiecePos.x + x)*playfield.cellWidth, (this.currentPiecePos.y + y)*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
         }
-      }
+      }  
     }
   }
 
@@ -337,10 +355,8 @@ class Piece {
           grid[i][j] = 0;
         }
         score += 100;
+        lineClearSound.play();
 
-        if (score % 1000 === 0 ) {
-          speed -= -50;
-        }
         // moves the everything down
         for (let row = i; row > 0; row--) {
           for (let col = 0; col < playfield.width; col++) {
@@ -374,6 +390,7 @@ class Piece {
     if (this.currentPiecePos.y === 0 && ifHitting(this.currentPiece, this.currentPiecePos.x, this.currentPiecePos.y, 0, 0)){
       isGameOver = true;
     }
+
     if (isGameOver){
       background("black");
       for (let y=0; y<playfield.height; y++){
@@ -384,8 +401,10 @@ class Piece {
         }
       }
       
-      // displays game over screen
+      // displays gameover screen
       image(theGameOver, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+      textSize(50);
+      text("YOUR SCORE IS " + score, windowWidth/2 , windowHeight-100, 800, 800);
     }
   }
 }

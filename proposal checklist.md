@@ -7,7 +7,7 @@
 - 7 different block ✓
 - Score counter ✓
 - Piece Rotates ✓
-- Audio and music
+- Audio and music ✓
 - Lines clear themselves when they're full ✓
 - Piece fall automatically ✓
 
