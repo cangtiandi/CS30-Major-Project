@@ -14,6 +14,9 @@ let music = true;
 let theGameOver, logo;
 let tetrisTheme;
 let lineClearSound;
+let theColour;
+let state = "";
+let colorList = ["lightblue", "blue", "orange", "yellow", "lightgreen", "purple", "red"];
 
 function preload() {
   theGameOver = loadImage("assets/Game Over.png");
@@ -38,10 +41,17 @@ function setup() {
   drawButton.mouseClicked(enterTetris);
 
   piece.spawnPiece();
+
+  state = "on";
 }
 
 function draw() {
   background(220);
+
+  if (state === "on"){
+    theColour = random(colorList);
+    state = "off";
+  }
 
   piece.gameOver();
   // enters the games
@@ -62,12 +72,14 @@ function draw() {
       piece.drawPiece();
 
       textSize(100);
+      fill("black");
       text("Score = " + score, 850, height - 750, 500, 500);
   
       // falling piece
-      if (millis() > time + (750 - speed)) {
+      if (millis() > time + 750 ) {
         if (ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)){
           piece.commitPieceToBoard();
+          state = "on";
         }
         else{
           piece.pieceMovement(0, 1);
@@ -87,9 +99,11 @@ function enterTetris(){
 }
 
 function keyPressed() {
+  // right
   if (key === "d"){
     piece.pieceMovement(1, 0);
   }
+  // left
   if (key === "a"){
     piece.pieceMovement(-1, 0);
   }
@@ -183,7 +197,6 @@ class Piece {
     this.gamePlayfield = new Playfield;
     this.currentPiece = [];
     this.gameGrid = this.gamePlayfield.createTetris2DArray();
-    this.colors = ["lightblue", "blue", "orange", "yellow", "lightgreen", "purple", "red"];
     this.currentPiecePos = {
       x: 3, 
       y: 0,
@@ -274,27 +287,7 @@ class Piece {
       for (let x=0; x<this.currentPiece[y].length; x++){
         // may use better ways later
         if (this.currentPiece[y][x] === 1){
-          if (this.currentPiece === this.squareBlock){
-            fill("lightblue");
-          }
-          if (this.currentPiece === this.lineBlock){
-            fill("blue");
-          }
-          if (this.currentPiece === this.tBlock){
-            fill("orange");
-          }
-          if (this.currentPiece === this.lBlock){
-            fill("yellow");
-          }
-          if (this.currentPiece === this.reverseLBlock){
-            fill("lightgreen");
-          }
-          if (this.currentPiece === this.zBlock){
-            fill("purple");
-          }
-          if (this.currentPiece === this.reverseZBlock){
-            fill("red");
-          }
+          fill(theColour);
           strokeWeight(0);
           rect((this.currentPiecePos.x + x)*playfield.cellWidth, (this.currentPiecePos.y + y)*playfield.cellHeight, playfield.cellWidth, playfield.cellHeight);
         }
