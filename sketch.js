@@ -1,18 +1,21 @@
 let grid;
 
-let drawButton, playButton, retry;
+let drawButton;
 let piece, playfield;
 
 let tetris = false;
 let isGameOver = false;
-let speed = 0;
 let score = 0;
 let time = 0;
+
+let speed = 0;
+let clearedLines = 0;
+let level = 1;
 
 let music = true;
 
 let theGameOver, logo;
-let tetrisTheme;
+let tetrisMusic;
 let lineClearSound;
 let theColour;
 let state = "";
@@ -21,7 +24,7 @@ let colorList = ["lightblue", "blue", "orange", "yellow", "lightgreen", "purple"
 function preload() {
   theGameOver = loadImage("assets/Game Over.png");
   logo = loadImage("assets/Tetris logo.png");
-  tetrisTheme = loadSound("assets/Tetris Theme.mp3");
+  tetrisMusic = loadSound("assets/Tetris Theme.mp3");
   lineClearSound = loadSound("assets/Line Clear.mp3");
 }
 
@@ -32,6 +35,7 @@ function setup() {
   playfield = new Playfield;
 
   grid = playfield.createTetris2DArray();
+  textAlign(CENTER);
   imageMode(CENTER);
 
   // Start menu
@@ -53,15 +57,28 @@ function draw() {
     state = "off";
   }
 
+  // instructions 
+  textSize(25);
+  text("Key A to move left", width/2, height - 200);
+  text("Key D to move right", width/2, height - 175);
+  text("Space to hard drop", width/2, height - 150);
+  text("Key S to soft drop", width/2, height - 125);
+  text("Key R to Rotate", width/2, height - 100);
+
   piece.gameOver();
   // enters the games
   if(isGameOver === false){
     image(logo, width/2, height/2 - 200, 800, 500);
+
     if (tetris){
       // plays music
       if (music){
-        tetrisTheme.play();
+        tetrisMusic.play();
         music = false;
+      }
+      // replays the song when it ends
+      if (!tetrisMusic.isPlaying()){
+        music = true;
       }
 
       background("white");
@@ -74,11 +91,12 @@ function draw() {
       textSize(100);
       fill("black");
       text("Score = " + score, 850, height - 750, 500, 500);
-  
+      text("Level:" + level, 850, height - 660, 500, 500);
       // falling piece
-      if (millis() > time + 750 ) {
+      if (millis() > time + (750 - speed)) {
         if (ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)){
           piece.commitPieceToBoard();
+          // piece will have new colors
           state = "on";
         }
         else{
@@ -86,11 +104,37 @@ function draw() {
         }
         time = millis();
       }
-
+      // soft drop
       if (keyIsDown(83)){
         piece.pieceMovement(0, 1);
       }
     }
+  }
+
+  // level system
+  if (clearedLines === 5){
+    level++;
+    speed += 50;
+  }
+  if (clearedLines === 10){
+    level++;
+    speed += 50;
+  }
+  if (clearedLines === 20){
+    level++;
+    speed += 50;
+  }
+  if (clearedLines === 25){
+    level++;
+    speed += 50;
+  }
+  if (clearedLines === 30){
+    level++;
+    speed += 50;
+  }
+  if (clearedLines === 35){
+    level++;
+    speed += 50;
   }
 }
 
@@ -114,9 +158,8 @@ function keyPressed() {
     piece.rotate();
   }
 
-  // debugger 
   if (key === "f"){
-    score += 100;
+    clearedLines++;
   }
 }
 
@@ -348,6 +391,7 @@ class Piece {
           grid[i][j] = 0;
         }
         score += 100;
+        clearedLines++; 
         lineClearSound.play();
 
         // moves the everything down
