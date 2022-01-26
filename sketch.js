@@ -17,6 +17,7 @@ let music = true;
 let theGameOver, logo;
 let tetrisMusic;
 let lineClearSound;
+let landing;
 let theColour;
 let state = "";
 let colorList = ["lightblue", "blue", "orange", "yellow", "lightgreen", "purple", "red"];
@@ -26,6 +27,7 @@ function preload() {
   logo = loadImage("assets/Tetris logo.png");
   tetrisMusic = loadSound("assets/Tetris Theme.mp3");
   lineClearSound = loadSound("assets/Line Clear.mp3");
+  landing = loadSound("assets/Tetris Landing.mp3");
 }
 
 function setup() {
@@ -65,11 +67,10 @@ function draw() {
   text("Key S to soft drop", width/2, height - 125);
   text("Key R to Rotate", width/2, height - 100);
 
-  piece.gameOver();
+  gameOver();
   // enters the games
   if(isGameOver === false){
     image(logo, width/2, height/2 - 200, 800, 500);
-
     if (tetris){
       // plays music
       if (music){
@@ -90,11 +91,14 @@ function draw() {
 
       textSize(100);
       fill("black");
-      text("Score = " + score, 850, height - 750, 500, 500);
-      text("Level:" + level, 850, height - 660, 500, 500);
+      text("Score = " + score, windowWidth - 750, windowHeight - 750);
+      text("Level:" + level, windowWidth - 1000, windowHeight - 660, 500, 500);
+
       // falling piece
       if (millis() > time + (750 - speed)) {
         if (ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 1)){
+          //plays sound after hitting the bottom or the piece
+          landing.play();
           piece.commitPieceToBoard();
           // piece will have new colors
           state = "on";
@@ -114,25 +118,41 @@ function draw() {
   // level system
   if (clearedLines === 5){
     level++;
-    speed += 50;
+    speed += 25;
   }
   if (clearedLines === 10){
     level++;
-    speed += 50;
+    speed += 25;
+  }
+  if (clearedLines === 15){
+    level++;
+    speed += 25;
   }
   if (clearedLines === 20){
     level++;
-    speed += 50;
+    speed += 25;
   }
   if (clearedLines === 25){
     level++;
-    speed += 50;
+    speed += 25;
   }
   if (clearedLines === 30){
     level++;
-    speed += 50;
+    speed += 25;
   }
   if (clearedLines === 35){
+    level++;
+    speed += 25;
+  }
+  if (clearedLines === 40){
+    level++;
+    speed += 50;
+  }
+  if (clearedLines === 45){
+    level++;
+    speed += 50;
+  }
+  if (clearedLines === 50){
     level++;
     speed += 50;
   }
@@ -156,10 +176,6 @@ function keyPressed() {
   }
   if (key === "r"){
     piece.rotate();
-  }
-
-  if (key === "f"){
-    clearedLines++;
   }
 }
 
@@ -188,6 +204,29 @@ function ifHitting(piece, posX, posY, directionX, directionY) {
     }
   }
   return false;
+}
+
+function gameOver() {
+  // checks if game is over 
+  if (piece.currentPiecePos.y === 0 && ifHitting(piece.currentPiece, piece.currentPiecePos.x, piece.currentPiecePos.y, 0, 0)){
+    isGameOver = true;
+  }
+
+  if (isGameOver){
+    background("black");
+    for (let y=0; y<playfield.height; y++){
+      for (let x=0; x<playfield.width; x++){
+        if (grid[y][x] !== 2){
+          grid[y][x] = 2;
+        }
+      }
+    }
+      
+      // displays gameover screen
+    image(theGameOver, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
+    textSize(50);
+    text("YOUR SCORE IS " + score, windowWidth/2 , windowHeight-100, 800, 800);
+  }
 }
 
 class Playfield {
@@ -328,7 +367,6 @@ class Piece {
   drawPiece() {
     for (let y=0; y<this.currentPiece.length; y++){
       for (let x=0; x<this.currentPiece[y].length; x++){
-        // may use better ways later
         if (this.currentPiece[y][x] === 1){
           fill(theColour);
           strokeWeight(0);
@@ -420,28 +458,5 @@ class Piece {
     grid = this.gameGrid;
     this.spawnPiece(); 
     this.clearLines();
-  }
-
-  gameOver() {
-    // checks if game is over 
-    if (this.currentPiecePos.y === 0 && ifHitting(this.currentPiece, this.currentPiecePos.x, this.currentPiecePos.y, 0, 0)){
-      isGameOver = true;
-    }
-
-    if (isGameOver){
-      background("black");
-      for (let y=0; y<playfield.height; y++){
-        for (let x=0; x<playfield.width; x++){
-          if (grid[y][x] !== 2){
-            grid[y][x] = 2;
-          }
-        }
-      }
-      
-      // displays gameover screen
-      image(theGameOver, windowWidth/2, windowHeight/2, windowWidth, windowHeight);
-      textSize(50);
-      text("YOUR SCORE IS " + score, windowWidth/2 , windowHeight-100, 800, 800);
-    }
   }
 }
