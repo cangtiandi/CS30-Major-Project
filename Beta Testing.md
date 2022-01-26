@@ -9,3 +9,6 @@
  - consistent colours
  - add difficulty 
  - disorienting shapes
+
+## response
+- added level system and an instructions page
